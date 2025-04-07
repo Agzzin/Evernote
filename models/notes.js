@@ -1,5 +1,5 @@
 const mongoose =  require('mongoose');
-const Schema = new mongoose.Schema({
+const noteSchema = new mongoose.Schema({
     title: String,
     body: String,
     created_at: { type: Date, default: Date.now },
