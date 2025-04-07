@@ -38,4 +38,14 @@ const isOwner = (user , note) =>{
 }}
 
 
+router.get('/', WithAuth, async (req, res) => {
+  try {
+    let notes = await Note.find({author: req.user._id})
+    res.json(notes);
+  } catch (error) {
+    res.status(500).json({error: 'Erro to get notes'});
+    
+  }
+})
+
 module.exports = router;
