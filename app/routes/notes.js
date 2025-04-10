@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Note = require('../../models/notes');
+const Note = require('../../models/note');
 const WithAuth = require('../middlewares/auth');
 
 router.post('/', WithAuth, async (req, res) => {
@@ -44,6 +44,29 @@ router.get('/', WithAuth, async (req, res) => {
     res.json(notes);
   } catch (error) {
     res.status(500).json({error: 'Erro to get notes'});
+    
+  }
+})
+
+router.put('/:id', WithAuth, async (req, res) => {
+  const { title, body } = req.body;
+  const {id} = req.params;
+
+  try {
+    let note = await Note.findById(id);
+    if(isOwner(req.user, note)){
+       note = await Note.findByIdAndUpdate(id, 
+        {$set: {title: title, body: body}},
+        {upsert: true, new: true}
+      );;
+
+      res.json(note);
+  
+    } else {
+      res.status(403).json({error: 'You are not the owner of this note'});
+        }
+  } catch (error) {
+    res.status(500).json({error: 'Erro to update note'});
     
   }
 })
